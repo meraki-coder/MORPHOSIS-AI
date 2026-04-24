@@ -1,0 +1,13 @@
+{
+  "name": "PersonaSwap AI",
+  "description": "An AI-powered platform for realistic video character replacement, swapping real actors with digital avatars or reference characters using advanced AI processing.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ],
+  "majorCapabilities": [
+    "Video Processing",
+    "AI Character Animation",
+    "Background Removal"
+  ]
+}
