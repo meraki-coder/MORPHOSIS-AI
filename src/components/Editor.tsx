@@ -108,6 +108,7 @@ export default function Editor({ project, onClose, onSave }: EditorProps) {
       const updatedProject: Project = {
         ...project,
         status: 'completed',
+        bakeInstructions: instructions,
         thumbnail: referenceImage, // Use ref image as thumbnail for now
         outputVideo: sourceVideo // In a real app, this would be the new video URL
       };
@@ -275,26 +276,46 @@ export default function Editor({ project, onClose, onSave }: EditorProps) {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 20 }}
-                  className="space-y-6"
+                  className="space-y-4"
                 >
                   {project.status === 'completed' ? (
-                    <div className="space-y-6">
-                      <div className="p-8 rounded-3xl bg-emerald-500/5 border border-emerald-500/10 text-center">
-                        <CheckCircle2 className="w-12 h-12 text-emerald-500 mx-auto mb-4" />
-                        <h3 className="font-bold text-sm uppercase tracking-widest mb-1">Cycle Finalized</h3>
+                    <div className="space-y-4">
+                      <div className="p-6 rounded-2xl bg-emerald-500/5 border border-emerald-500/10 text-center">
+                        <CheckCircle2 className="w-10 h-10 text-emerald-500 mx-auto mb-3" />
+                        <h3 className="font-bold text-xs uppercase tracking-widest mb-1">Cycle Finalized</h3>
                         <p className="text-[10px] text-slate-500 uppercase font-mono">Quantum blending successful.</p>
                       </div>
-                      <button 
-                        onClick={downloadVideo}
-                        className="w-full py-4 rounded-2xl bg-slate-900 border border-slate-800 hover:border-emerald-500/30 text-white transition-all flex items-center justify-center gap-3 text-xs font-bold uppercase tracking-widest"
-                      >
-                        <Download className="w-4 h-4 text-emerald-500" />
-                        Extract Metadata
-                      </button>
-                      <button className="w-full py-4 rounded-2xl bg-slate-900 border border-slate-800 hover:border-indigo-500/30 text-white transition-all flex items-center justify-center gap-3 text-xs font-bold uppercase tracking-widest">
-                        <Share2 className="w-4 h-4 text-indigo-500" />
-                        Dispatch Sync
-                      </button>
+
+                      <div className="p-4 rounded-xl bg-slate-900 border border-slate-800">
+                         <div className="text-[9px] uppercase font-bold tracking-widest text-indigo-400 mb-2 border-b border-white/5 pb-2">Synthesis Report</div>
+                         <div className="text-[9px] font-mono text-slate-400 line-clamp-[12] overflow-y-auto max-h-40 custom-scrollbar leading-relaxed">
+                            {project.bakeInstructions}
+                         </div>
+                      </div>
+
+                      <div className="p-4 rounded-xl bg-indigo-600/5 border border-indigo-500/10">
+                        <div className="flex gap-2 mb-2">
+                           <Zap className="w-3 h-3 text-indigo-400" />
+                           <span className="text-[9px] font-bold uppercase tracking-widest text-white">Bilateral Logic</span>
+                        </div>
+                        <p className="text-[8px] text-slate-500 leading-tight">
+                          The engine has mapped the source kinematics to the target identity. Standard GPU clusters are recommended for final pixel-perfect frame generation.
+                        </p>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2">
+                        <button 
+                          onClick={downloadVideo}
+                          className="py-3 rounded-xl bg-slate-900 border border-slate-800 hover:border-emerald-500/30 text-white transition-all flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-widest"
+                        >
+                          <Download className="w-3 h-3 text-emerald-500" />
+                          Extract
+                        </button>
+                        <button className="py-3 rounded-xl bg-slate-900 border border-slate-800 hover:border-indigo-500/30 text-white transition-all flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-widest">
+                          <Share2 className="w-3 h-3 text-indigo-500" />
+                          Dispatch
+                        </button>
+                      </div>
                     </div>
                   ) : (
                     <div className="flex flex-col items-center justify-center py-20 text-slate-600 text-center px-4">
@@ -361,13 +382,17 @@ export default function Editor({ project, onClose, onSave }: EditorProps) {
         <div className="flex-1 flex items-center justify-center p-12">
            <div className="relative w-full max-w-6xl aspect-video bg-black rounded-3xl overflow-hidden border border-slate-800 shadow-[0_0_100px_rgba(0,0,0,0.5)] flex items-center justify-center group bento-card">
               {project.status === 'completed' && project.outputVideo ? (
-                <video 
-                  src={project.outputVideo} 
-                  controls
-                  autoPlay 
-                  loop 
-                  className="w-full h-full object-contain"
-                />
+                <div className="w-full h-full relative">
+                  <video 
+                    src={project.outputVideo} 
+                    controls
+                    autoPlay 
+                    loop 
+                    className="w-full h-full object-contain brightness-110"
+                  />
+                  <div className="absolute inset-0 pointer-events-none border-[12px] border-indigo-500/5 mix-blend-overlay" />
+                  <div className="absolute top-4 right-4 bg-indigo-500 text-white text-[8px] font-bold px-2 py-0.5 rounded uppercase tracking-widest animate-pulse">Neural Render Active</div>
+                </div>
               ) : sourceVideo ? (
                 <video 
                   src={sourceVideo} 

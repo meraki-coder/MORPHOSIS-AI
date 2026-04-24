@@ -50,6 +50,7 @@ export default function App() {
             name: 'Urban Dance Swap',
             status: 'completed',
             createdAt: Date.now() - 86400000,
+            bakeInstructions: "IDENTITY: Cyber Knight [CK-01]\nMOTION: High-frequency urban dance patterns detected.\nSYNTHESIS: Mapped skeletal rig to CK-01 armature. Lighting parity set to 0.94. Depth occlusion enabled.",
             options: {
               removeBackground: true,
               animationSpeed: 1,
@@ -81,7 +82,7 @@ export default function App() {
     const newProject: Project = {
       id: Math.random().toString(36).substr(2, 9),
       name: `Untitled Project ${projects.length + 1}`,
-      status: 'draft',
+      status: 'idle',
       createdAt: Date.now(),
       options: {
         removeBackground: false,
@@ -91,8 +92,7 @@ export default function App() {
         format: 'mp4'
       }
     };
-    const updated = [newProject, ...projects];
-    setProjects(updated);
+    setProjects(prev => [newProject, ...prev]);
     await saveProjectToStorage(newProject);
     setActiveProject(newProject);
     setCurrentView('editor');
@@ -105,8 +105,8 @@ export default function App() {
 
   const deleteProject = async (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    const updated = projects.filter(p => p.id !== id);
-    setProjects(updated);
+    setProjects(prev => prev.filter(p => p.id !== id));
+    if (activeProject?.id === id) setActiveProject(null);
     try {
       await Storage.deleteProject(id);
     } catch (e) {
@@ -151,8 +151,7 @@ export default function App() {
                 project={activeProject} 
                 onClose={() => setCurrentView('dashboard')}
                 onSave={async (p) => {
-                  const updated = projects.map(proj => proj.id === p.id ? p : proj);
-                  setProjects(updated);
+                  setProjects(prev => prev.map(proj => proj.id === p.id ? p : proj));
                   await saveProjectToStorage(p);
                   setActiveProject(p);
                 }}

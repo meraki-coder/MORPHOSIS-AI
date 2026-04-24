@@ -8,6 +8,7 @@ export interface Project {
   referenceImage?: string;
   status: ProjectStatus;
   createdAt: number;
+  bakeInstructions?: string;
   options: {
     removeBackground: boolean;
     animationSpeed: number;
